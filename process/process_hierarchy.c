@@ -30,27 +30,33 @@ int main(int argc, char *argv[])
     if (fork() == 0) {  // p2        
         if (fork() == 0) {  // p4
             printf("p4 started with pid: %d ppid: %d\n", getpid(), getppid());
+            exit(0);
         } else {
             if (fork() == 0) {  // p5
                 printf("p5 started with pid: %d ppid: %d\n", getpid(), getppid());
+                exit(0);
             } else {
                 printf("p2 started with pid: %d ppid: %d\n", getpid(), getppid());
                 wait_for_any_child();
                 wait_for_any_child();
+                exit(0);
             }
         }
     } else {    
         if (fork() == 0) {  // p3
             if (fork() == 0) {  // p6
                 printf("p6 started with pid: %d ppid: %d\n", getpid(), getppid());
+                exit(0);
             } else {
                 printf("p3 started with pid: %d ppid: %d\n", getpid(), getppid());
                 wait_for_any_child();
+                exit(0);
             }
         } else { //p1
             wait_for_any_child();
             wait_for_any_child();
-            printf("pid: %d terminated\n", getpid());   
+            printf("pid: %d terminated\n", getpid());
+            exit(0);
         }
     }
 

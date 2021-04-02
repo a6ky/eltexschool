@@ -22,7 +22,11 @@ int main(int argc, char *argv[])
     printf("Input message: ");
     fgets(msg.mtext, MSGLEN, stdin);
 
-    msg_len = strlen(msg.mtext) + 1;
+    printf("Input mtype: ");
+    scanf("%lu", &msg.mtype);
+
+    msg_len = strlen(msg.mtext);
+    msg.mtext[msg_len - 1] = '\0';          /* delete \n from message */ 
 
     key = ftok("./sysvmsg_create", 1);
     if (key == (key_t) -1)

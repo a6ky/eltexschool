@@ -58,10 +58,10 @@ int main(int argc, char *argv[])
 
     totBytes = msgLen;
     for(numMsgs = 1; resp.mtype == RESP_MT_DATA; numMsgs++) {
-        msgLen = msgrcv(serverId, &resp, REQ_MSG_SIZE, 0, 0);
+        msgLen = msgrcv(clientId, &resp, REQ_MSG_SIZE, 0, 0);
         if (msgLen == -1)
             perror("msgrcv");
-
+     
         totBytes += msgLen;
     }
 

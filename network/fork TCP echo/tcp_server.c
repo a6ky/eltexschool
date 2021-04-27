@@ -6,7 +6,7 @@
  */
 #define BACKLOG 5
 
-static void grimReaper(int sig) {
+static void sig_child(int sig) {
     int savedErrno;
     
     savedErrno = errno;
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     struct sigaction    sa;
    
     sa.sa_flags = SA_RESTART;
-    sa.sa_handler = grimReaper;     
+    sa.sa_handler = sig_child;     
 
     if (sigaction(SIGCHLD, &sa, NULL) == -1)
         handle_error("sigaction");

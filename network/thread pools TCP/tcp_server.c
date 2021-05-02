@@ -7,6 +7,9 @@
  */
 #define BACKLOG 5
 
+pthread_t thread_pool[THREAD_POOL_SIZE];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 void *handleRequest(void *p_client_scoket)
 {
     int cfd = *((int *) p_client_scoket);
@@ -37,7 +40,9 @@ void *handleRequest(void *p_client_scoket)
 void *thread_function(void *args)
 {
     for (;;) {
+        pthread_mutex_lock(&mutex);
         int *pclient = dequeue();
+        pthread_mutex_unlock(&mutex);
 
         if (pclient != NULL)
             handleRequest(pclient);
@@ -49,7 +54,6 @@ int main(int argc, char *argv[])
     struct sockaddr_in  svaddr;
     int                 i, sfd, cfd;
     int                 *pclient;
-    pthread_t           thread_pool[THREAD_POOL_SIZE];
 
     for (i = 0; i < THREAD_POOL_SIZE; i++)
         pthread_create(&thread_pool[i], NULL, thread_function, NULL);
@@ -77,7 +81,9 @@ int main(int argc, char *argv[])
         pclient = malloc(sizeof(int));
         *pclient = cfd;
         
+        pthread_mutex_lock(&mutex);
         enqueue(pclient);
+        pthread_mutex_unlock(&mutex);
     }
     
     if (close(sfd) == -1)

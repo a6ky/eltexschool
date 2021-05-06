@@ -8,7 +8,6 @@ int main(int argc, char *argv[])
     int                 rawsock_fd;
     char                dgram[DGRAM_SIZE];
     char                data[BUF_SIZE];
-    char                *dgram_ptr;
     
     rawsock_fd = socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
     if (rawsock_fd == -1)
@@ -31,10 +30,8 @@ int main(int argc, char *argv[])
     udp_header.len      = htons(dgram_len);
     udp_header.checksum = 0;
 
-    dgram_ptr = dgram;
-    memcpy(dgram_ptr, &udp_header, sizeof(udp_header_t));
-    dgram_ptr += sizeof(udp_header_t);
-    memcpy(dgram_ptr, data, strlen(data));
+    memcpy((void *) dgram, (void *) &udp_header, sizeof(udp_header_t));
+    memcpy((void *) dgram + sizeof(udp_header_t), (void *) data, strlen(data));
 
     if (sendto(rawsock_fd, dgram, dgram_len, 0, (struct sockaddr *) &svaddr, 
                 sizeof(struct sockaddr_in)) == -1)
